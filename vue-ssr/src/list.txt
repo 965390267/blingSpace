@@ -1,0 +1,11 @@
+卷 新加卷 的文件夹 PATH 列表
+卷序列号为 40AD-7648
+D:.
+│  App.vue
+│  list.txt
+│  main.js
+│  
+└─components
+        Bar.vue
+        Foo.vue
+        
