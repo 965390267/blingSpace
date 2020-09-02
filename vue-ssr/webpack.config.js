@@ -8,7 +8,7 @@ const resolve = (dir)=>{
 }
 
 module.exports = {
-    entry: resolve('./src/main.js'),
+    entry: resolve('./src/client-entry.js'),
     output: {
         filename: 'bundle.js',
         path: resolve('./dist')
