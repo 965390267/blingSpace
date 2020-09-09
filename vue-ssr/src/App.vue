@@ -1,8 +1,11 @@
 <template>
     <div id="app">
-        app
-        <Bar/>
-        <Foo/>
+        <router-link to="/"> bar</router-link>
+        <router-link to="/foo"> foo</router-link>
+        <router-view></router-view>
+        <button @click="clickMe">
+            点我
+        </button>
     </div>
 </template>
 
@@ -13,7 +16,11 @@ export default {
     components: {
         Bar,
         Foo
-    }
+    },
+    methods: {
+    clickMe(){
+        alert(1)
+    }}
 }
 </script>
 

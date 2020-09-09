@@ -6,17 +6,19 @@ const router = new Router();
 const VueServerRender = require('vue-server-renderer');
 const fs = require('fs');
 const path = require('path');
-let ServerBundle = fs.readFileSync("./dist/server.bundle.js",'utf-8');
 
+const ServerBundle = require('./dist/vue-ssr-server-bundle');
+const clientManifest = require('./dist/vue-ssr-client-manifest')
 
 const template = fs.readFileSync('./dist/index.ssr.html','utf8');
 
 let render = VueServerRender.createBundleRenderer(ServerBundle,{
-    template
+    template,
+    clientManifest
 });
 router.get('/',async ctx =>{
     ctx.body = await new Promise((resolve,rej)=>{
-        render.renderToString((err,data)=>{
+        render.renderToString({url:'/'},(err,data)=>{
             if(err){
                 rej(err);
             }
@@ -27,5 +29,22 @@ router.get('/',async ctx =>{
 
 
 app.use(router.routes());
-app.use(static(path.join(__dirname,'dist')))
+app.use(static(path.join(__dirname,'dist')));
+// 如果匹配不到会执行此逻辑
+app.use(async ctx => {
+    try {
+        ctx.body = await new Promise((resolve,rej)=>{
+            console.log(ctx.url);
+            render.renderToString({url:ctx.url},(err,data)=>{
+                if(err){
+                    rej(err);
+                }
+                resolve(data)
+            })
+        });
+    } catch (error) {
+        ctx.body = '404'
+    }
+
+});
 app.listen(3000);

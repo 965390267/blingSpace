@@ -7,6 +7,9 @@
 
 <script>
 export default {
+    asyncData(store){
+        return store.dispatch('set_user');
+    },
     methods:{
         clickMe(){
             alert("点我")
