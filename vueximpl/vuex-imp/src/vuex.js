@@ -52,7 +52,19 @@ class Store {
                 this.mutations[mutationName] =()=> mutationFn.call(this,state);
             })
         }
-
+        if (options.actions) {
+            let actions = options.actions;
+            forEach(actions, (actionName, actionFn) => {
+                this.actions[actionName] =()=> actionFn.call(this,this);
+            })
+        }
+        let {commit,dispatch} = this;
+        this.commit = (type) => {
+            commit.call(this,type)
+        }
+        this.dispatch = (type) => {
+            dispatch.call(this,type)
+        }
 
 
     }
@@ -60,9 +72,12 @@ class Store {
         return this._vm.state
     }
     commit(type){
-        console.log(type);
-        console.log(this.mutations[type]);
+        console.log(this);
+        // console.log(this.mutations[type]);
         this.mutations[type]()
+    }
+    dispatch(type){
+        this.actions[type]()
     }
 }
 

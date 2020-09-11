@@ -2,7 +2,7 @@
   <div id="app">
     {{$store.state.count}}
     {{$store.getters.value}}
-    <button @click="$store.commit('add')">+1</button>
+    <button @click="clickMe">+1</button>
   </div>
 </template>
 
@@ -16,6 +16,11 @@ export default {
   },
   mounted(){
     console.log(this.$store);
+  },
+  methods: {
+    clickMe(){
+      this.$store.dispatch('add')
+    }
   }
 }
 </script>

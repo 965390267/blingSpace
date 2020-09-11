@@ -12,12 +12,18 @@ export default new Vuex.Store({
       state.count += 1;
     }
   },
+
+  actions: {
+    add({commit}){
+      commit('add')
+      // console.log(commit);
+      // state.count += 1;
+    }
+  },
   getters: {
     value(state){
       return state.count + 100
     }
-  },
-  actions: {
   },
   modules: {
   }
