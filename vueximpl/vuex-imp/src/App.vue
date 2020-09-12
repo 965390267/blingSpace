@@ -2,6 +2,7 @@
   <div id="app">
     {{$store.state.count}}
     {{$store.getters.value}}
+    {{$store.state.a.b.count}}
     <button @click="clickMe">+1</button>
   </div>
 </template>

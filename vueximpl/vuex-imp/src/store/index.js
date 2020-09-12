@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from '../vuex'
+// import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
@@ -10,6 +11,7 @@ export default new Vuex.Store({
   mutations: {
     add(state){
       state.count += 1;
+      console.log("root的add");
     }
   },
 
@@ -26,5 +28,22 @@ export default new Vuex.Store({
     }
   },
   modules: {
+    a: {
+      state: {
+        count:201
+      },
+      modules: {
+        b: {
+          state: {
+            count:300
+          },
+          mutations: {
+            add(state){
+             console.log("b的add");
+            }
+          }
+        }
+      }
+    }
   }
 })
