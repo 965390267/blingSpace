@@ -34,6 +34,8 @@ function initWatch(params) {
 
 }
 
+
+
 /**
  * 代理vm上的赋值和取值操作
  * @param {*} vm

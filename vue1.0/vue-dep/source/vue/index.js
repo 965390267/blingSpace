@@ -1,4 +1,5 @@
 import {initState} from './observe';
+import {Watcher} from './observe/watcher';
 import {compiler,util} from './util.js';
 
 /**
@@ -16,10 +17,9 @@ Vue.prototype._init = function (options) {
         vm.$mount();
     }
 }
-
 /**
  * 返回el挂载点的dom元素
- * @param {*} el
+ * @param {*} el 
  */
 function query(el) {
     if(typeof el == 'string') el = document.querySelector(el);
@@ -37,7 +37,7 @@ Vue.prototype._update = function (){
     let node = document.createDocumentFragment();
     let firstChild;
     while(firstChild = el.firstChild){ // 每次拿到第一个元素就将这个元素放入到文档碎片中
-        node.appendChild(firstChild); // appendChild 是具有移动的功能
+        node.appendChild(firstChild); // appendChild 是具有移动的功能 
     }
     // todo 对文本进行替换
     compiler(node,vm);
@@ -46,7 +46,6 @@ Vue.prototype._update = function (){
     // 依赖收集 属性变化了 需要重新渲染 watcher 和 dep
 
 }
-
 /**
  * 渲染页面 将组件进行挂载
  */
@@ -60,13 +59,19 @@ Vue.prototype.$mount = function() {
         // console.log(111);
         this._update()
     }
-    updateComponent()
-
+    // 渲染watcher
+    new Watcher(vm,updateComponent)
 }
-
+Vue.prototype.$watch = function (expr,handler,opts) {
+    // console.log(opts);
+    
+    // 创建一个watcher
+     new Watcher(this,expr,handler,{user:true,...opts})
+}
 function Vue(options) {
     this._init(options);
 //    console.log(typeof this._init);
-
+     
 }
+
 export default Vue;

@@ -25,10 +25,14 @@ var vm = new Vue({
         }
     }
 })
+// vm.$watch('msg',()=>{
+//     console.log("我是依赖");
+
+// })
 setTimeout(() => {
     // debugger;
     // vm.firstName = 'wang'
-    // vm.msg = '加油';
+    vm.msg = '加油';
     // vm.arr.push('红烛晕罗帐')
     // console.log(vm);
 }, 1000);

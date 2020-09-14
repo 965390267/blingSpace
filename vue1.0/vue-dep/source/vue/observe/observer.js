@@ -2,7 +2,7 @@ import {
     observe
 } from './index.js';
 import {arrayMethods,observerArray, dependArray} from './array.js';
-
+import Dep from './dep.js';
 
 /**
  * 定义响应式的数据变化
@@ -10,11 +10,21 @@ import {arrayMethods,observerArray, dependArray} from './array.js';
 export function defineReactive(data, key, value) {
     // 递归观察
     let childOb = observe(value);
-
+    // dep 收集依赖
+    let dep = new Dep();
     Object.defineProperty(data, key, {
         get() {
-            console.log("触发取值操作");
-
+            // 如果是watcher  则会有值  目前为渲染watcher 
+            // 需要考虑watcher重复问题 所以不直接addSub
+            if(Dep.target){
+                // 让watcher 和 dep 记录多对多的关系
+                dep.depend();
+                // dep.addSub(Dep.target)
+                if(childOb){
+                    childOb.dep.depend(); // 数组收集当前渲染watcher
+                    dependArray(value);
+                }
+            }
             return value
         },
         set(newValue) {
@@ -22,9 +32,11 @@ export function defineReactive(data, key, value) {
             if (newValue === value) return;
             observe(newValue)
             // console.log(newValue,dep);
+            
 
-            console.log("渲染页面");
-
+            value = newValue;
+            // 执行watcher
+            dep.notify();
         }
     })
 
@@ -32,10 +44,14 @@ export function defineReactive(data, key, value) {
 
 class Observer {
     /**
-     *
-     * @param {*} data   vm._data
+     * 
+     * @param {*} data   vm._data 
      */
     constructor(data) {
+        // console.log('observer',data);
+        // 如果是数组
+        // 此dep只属于数组 虽然对象都有，但非数组对象无意义，因为已经收集过了，所以在addDep时会被忽略，但数组在调用方法时如果没有这个，则无法收集依赖，无法更新视图
+        this.dep = new Dep()  
         // 每个对象包括数组都有一个__ob__属性，返回的是当前observer实例
         Object.defineProperty(data,'__ob__',{
             get:()=>this
@@ -45,7 +61,7 @@ class Observer {
             data.__proto__ = arrayMethods;
             observerArray(data)
             // console.log(data,arrayMethods);
-
+            
         } else {
             this.walk(data)
         }
