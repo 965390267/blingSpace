@@ -12,6 +12,8 @@ class Observer {
 }
 
 function defineReactuve(data,key,value){
+    // 实现递归
+    observe(value)
     Object.defineProperty(data,key,{
         get(){
             console.log('用户取值');
@@ -19,7 +21,9 @@ function defineReactuve(data,key,value){
         },
         set(newValue){
             console.log('用户赋值');
-            if(value === newValue){
+            if(value !== newValue){
+                // 对新赋值的对象进行观测
+                observe(newValue);
                 value = newValue
             }
         }
@@ -31,7 +35,7 @@ function defineReactuve(data,key,value){
 
 export function observe(data){
     console.log(data);
-    if(typeof data !== 'object' && data !== null){
+    if(typeof data !== 'object' || data !== null){
         return;
     }
     return new Observer(data);
