@@ -10,15 +10,20 @@
     </div>
     <script src="dist/umd/vue.js"></script>
     <script>
-        let vm = new Vue({
+       let vm = new Vue({
             el: '#app',
             data(){
                 return {
-                    a: '111'
+                    a: [1,2,3,{
+                      b:11
+                    }]
                 }
             }
         })
-        console.log(vm._data);
+// 数组方法的劫持
+vm._data.a.shift();
+// 数组内对象的劫持
+vm._data.a[2].b = 22;
     </script>
 </body>
 </html>

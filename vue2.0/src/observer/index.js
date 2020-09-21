@@ -1,13 +1,34 @@
+import {arrayMethods} from './array';
 class Observer {
-    constructor(value){
+    constructor(data){
        
-        this.walk(value);
+        if (Array.isArray(data)) {
+            // 新增属性，声明此属性已被观测
+            Object.defineProperty(data,"__ob__",{
+                enumerable:false,
+                configurable: false,
+                value:this
+            })
+
+            // 只能拦截数组的方法，但对数组中的每一项 无法监听 需要观测
+            data.__proto__ = arrayMethods;
+            this.observerArray(data)
+            // console.log(data,arrayMethods);
+
+        } else {
+            this.walk(data)
+        }
     }
     walk(data){
         let keys = Object.keys(data);
         keys.forEach(key=>{
             defineReactuve(data,key,data[key]);
         })
+    }
+    observerArray(value) {
+        for (let i  = 0; i < value.length; i++) {
+            observe(value[i])
+        }
     }
 }
 
@@ -35,8 +56,9 @@ function defineReactuve(data,key,value){
 
 export function observe(data){
     console.log(data);
-    if(typeof data !== 'object' || data !== null){
+    if(typeof data !== 'object' || data == null){
         return;
     }
+    if(data.__ob__) return;
     return new Observer(data);
 }

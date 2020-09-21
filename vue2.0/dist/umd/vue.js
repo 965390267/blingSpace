@@ -42,11 +42,55 @@
     return Constructor;
   }
 
+  var oldArrayProtoMethods = Array.prototype;
+  var arrayMethods = Object.create(oldArrayProtoMethods);
+  var methods = ['push', 'shift', 'unshift', 'pop', 'reverse', 'sort', 'splice', 'concat'];
+  methods.forEach(function (method) {
+    // console.log(arrayMethods,method);
+    arrayMethods[method] = function () {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      var r = oldArrayProtoMethods[method].apply(this, args); // todo
+
+      var inserted;
+      var ob = this.__ob__;
+
+      switch (method) {
+        case 'push':
+        case 'unshift':
+          inserted = args;
+          break;
+
+        case "splice":
+          inserted = args.slice(2);
+      } // console.log(inserted);
+
+
+      if (inserted) ob.observerArray(inserted);
+      console.log('数组更新方法 == 去渲染页面');
+      return r;
+    };
+  });
+
   var Observer = /*#__PURE__*/function () {
-    function Observer(value) {
+    function Observer(data) {
       _classCallCheck(this, Observer);
 
-      this.walk(value);
+      if (Array.isArray(data)) {
+        // 新增属性，声明此属性已被观测
+        Object.defineProperty(data, "__ob__", {
+          enumerable: false,
+          configurable: false,
+          value: this
+        }); // 只能拦截数组的方法，但对数组中的每一项 无法监听 需要观测
+
+        data.__proto__ = arrayMethods;
+        this.observerArray(data); // console.log(data,arrayMethods);
+      } else {
+        this.walk(data);
+      }
     }
 
     _createClass(Observer, [{
@@ -57,12 +101,21 @@
           defineReactuve(data, key, data[key]);
         });
       }
+    }, {
+      key: "observerArray",
+      value: function observerArray(value) {
+        for (var i = 0; i < value.length; i++) {
+          observe(value[i]);
+        }
+      }
     }]);
 
     return Observer;
   }();
 
   function defineReactuve(data, key, value) {
+    // 实现递归
+    observe(value);
     Object.defineProperty(data, key, {
       get: function get() {
         console.log('用户取值');
@@ -71,7 +124,9 @@
       set: function set(newValue) {
         console.log('用户赋值');
 
-        if (value === newValue) {
+        if (value !== newValue) {
+          // 对新赋值的对象进行观测
+          observe(newValue);
           value = newValue;
         }
       }
@@ -81,10 +136,11 @@
   function observe(data) {
     console.log(data);
 
-    if (_typeof(data) !== 'object' && data !== null) {
+    if (_typeof(data) !== 'object' || data == null) {
       return;
     }
 
+    if (data.__ob__) return;
     return new Observer(data);
   }
 
