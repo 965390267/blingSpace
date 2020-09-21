@@ -10,14 +10,15 @@
     </div>
     <script src="dist/umd/vue.js"></script>
     <script>
-        new Vue({
+        let vm = new Vue({
             el: '#app',
             data(){
                 return {
-
+                    a: '111'
                 }
             }
         })
+        console.log(vm._data);
     </script>
 </body>
 </html>
