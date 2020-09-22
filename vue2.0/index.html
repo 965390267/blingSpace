@@ -8,6 +8,7 @@
     <div id="app">
 
     </div>
+    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.5.0/vue.js"></script> -->
     <script src="dist/umd/vue.js"></script>
     <script>
        let vm = new Vue({
@@ -20,10 +21,11 @@
                 }
             }
         })
-// 数组方法的劫持
-vm._data.a.shift();
-// 数组内对象的劫持
-vm._data.a[2].b = 22;
+// // 数组方法的劫持
+// vm._data.a.shift();
+// // 数组内对象的劫持
+// vm._data.a[2].b = 22;
+vm.a.shift();
     </script>
 </body>
 </html>

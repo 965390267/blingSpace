@@ -134,8 +134,6 @@
   }
 
   function observe(data) {
-    console.log(data);
-
     if (_typeof(data) !== 'object' || data == null) {
       return;
     }
@@ -157,9 +155,25 @@
     }
   }
 
+  function proxy(vm, data, key) {
+    Object.defineProperty(vm, key, {
+      get: function get() {
+        return vm[data][key];
+      },
+      set: function set(newValue) {
+        vm[data][key] = newValue;
+      }
+    });
+  }
+
   function initData(vm) {
     var data = vm.$options.data;
-    vm._data = data = typeof data == 'function' ? data.call(vm) : data;
+    vm._data = data = typeof data == 'function' ? data.call(vm) : data; // 进行代理，实现直接从实例上处理数据
+
+    for (var key in data) {
+      proxy(vm, '_data', key);
+    }
+
     observe(data);
   }
 
@@ -173,8 +187,6 @@
   }
 
   function Vue(options) {
-    console.log(options);
-
     this._init(options);
   }
 

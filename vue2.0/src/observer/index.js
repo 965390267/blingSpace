@@ -1,7 +1,7 @@
 import {arrayMethods} from './array';
 class Observer {
     constructor(data){
-       
+
         if (Array.isArray(data)) {
             // 新增属性，声明此属性已被观测
             Object.defineProperty(data,"__ob__",{
@@ -55,7 +55,6 @@ function defineReactuve(data,key,value){
 }
 
 export function observe(data){
-    console.log(data);
     if(typeof data !== 'object' || data == null){
         return;
     }
