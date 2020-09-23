@@ -8,6 +8,10 @@ export function compilerToFunction(template){
     // 通过树生成代码
     let code = generate(ast);
 
-    console.log(code);
+    // 1. 代码转fn 
+    // 2. 全局变量转vm with
+    let render = new Function(`with(this){return ${code}}`);
+    console.log(render);
+    return render;
 
 }

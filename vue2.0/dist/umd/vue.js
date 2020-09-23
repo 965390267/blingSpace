@@ -484,8 +484,12 @@
     var ast = parseHTML(template); // 优化静态节点
     // 通过树生成代码
 
-    var code = generate(ast);
-    console.log(code);
+    var code = generate(ast); // 1. 代码转fn 
+    // 2. 全局变量转vm with
+
+    var render = new Function("with(this){return ".concat(code, "}"));
+    console.log(render);
+    return render;
   }
 
   function initMixin(Vue) {
