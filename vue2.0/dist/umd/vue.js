@@ -214,20 +214,14 @@
   // 1. 没有 g   ： 返回标准匹配格式，即：数组的第一个元素是整体匹配的内容，接下来是分组捕获的内容，然后是整体匹配的第一个下标，最后是目标字符串
   // 2. 有g ：返回的是一个包含所有匹配内容的数组
 
-  function start(tagName, attrs) {
-    console.log(tagName, attrs, "======开始标签 属性");
-  }
-
-  function end(tagName) {
-    console.log(tagName, "======结束标签");
-  }
-
-  function chars(text) {
-    console.log(text, "======文本");
-  }
-
   function parseHTML(html) {
+    var root,
+        // ast树 树根
+    currentParent,
+        // 遍历时存储当前父级元素的变量
+    stack = []; // 存储标签的栈 用于校验html结构是否正确
     // debugger;
+
     while (html) {
       // 1. 以<开头的必是 标签
       var textEnd = html.indexOf('<');
@@ -260,6 +254,60 @@
         advance(text.length);
         chars(text);
       }
+    }
+
+    return root; // 信息处理函数
+
+    function start(tagName, attrs) {
+      console.log(tagName, attrs, "======开始标签 属性");
+      var element = createASTElement(tagName, attrs);
+
+      if (!root) {
+        root = element;
+      }
+
+      currentParent = element;
+      stack.push(element);
+    } // 在结尾标签处创建父子关系
+
+
+    function end(tagName) {
+      console.log(tagName, "======结束标签");
+      var element = stack.pop();
+      currentParent = stack[stack.length - 1]; // 在标签闭合时记录标签的父级
+
+      if (currentParent) {
+        element.parent = currentParent;
+        currentParent.children.push(element);
+      }
+    }
+
+    function chars(text) {
+      console.log(text, "======文本");
+      text = text.replace(/\s/g, '');
+
+      if (text) {
+        currentParent.children.push({
+          type: 3,
+          text: text
+        });
+      }
+    } // 生成ast树单元
+
+
+    function createASTElement(tagName, attrs) {
+      return {
+        tag: tagName,
+        //标签名
+        type: 1,
+        // 标签类型
+        children: [],
+        // 孩子列表
+        attrs: attrs,
+        // 属性集合
+        parent: null // 父级元素
+
+      };
     } // 将字符串进行截取操作，再更新字符串
 
 
@@ -300,6 +348,7 @@
   function compilerToFunction(template) {
     console.log(template);
     var ast = parseHTML(template);
+    console.log(ast);
   }
 
   function initMixin(Vue) {
