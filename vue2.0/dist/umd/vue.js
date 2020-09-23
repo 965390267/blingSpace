@@ -488,8 +488,17 @@
     // 2. 全局变量转vm with
 
     var render = new Function("with(this){return ".concat(code, "}"));
-    console.log(render);
     return render;
+  }
+
+  function lifecycleMixin(Vue) {
+    Vue.prototype._update = function (vnode) {};
+  }
+  function mountComponent(vm, el) {
+    // 调用render方法，渲染el属性
+    // 先使用render方法创建虚拟节点 
+    vm._update(vm._render()); // 将虚拟节点渲染到页面上
+
   }
 
   function initMixin(Vue) {
@@ -520,14 +529,34 @@
 
       var render = compilerToFunction(template);
       options.render = render;
-    }
+    } // options中存在render后 开始挂载此组件
+
+
+    mountComponent(vm);
   };
+
+  function renderMixin(Vue) {
+    Vue.prototype._render = function () {
+      var vm = this;
+      var render = vm.$options.render;
+      var vnode = render.call(vm);
+      return vnode;
+    };
+
+    Vue.prototype._c = function () {};
+
+    Vue.prototype._v = function () {};
+
+    Vue.prototype._s = function () {};
+  }
 
   function Vue(options) {
     this._init(options);
   }
 
   initMixin(Vue);
+  lifecycleMixin(Vue);
+  renderMixin(Vue);
 
   return Vue;
 

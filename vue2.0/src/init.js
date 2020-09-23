@@ -1,6 +1,7 @@
 import { initState } from "./state";
 import Vue from "./index";
 import {compilerToFunction} from './compiler/index';
+import { mountComponent } from "./lifecycle";
 
 export function initMixin(Vue) {
     Vue.prototype._init = function (options) {
@@ -29,4 +30,8 @@ Vue.prototype.$mount = function (el){
         const render = compilerToFunction(template);
         options.render = render;
     }
+
+    // options中存在render后 开始挂载此组件
+    mountComponent(vm,el)
+
 }
