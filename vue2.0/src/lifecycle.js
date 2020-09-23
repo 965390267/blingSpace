@@ -2,6 +2,7 @@ import {patch} from './vdom/patch';
 export function lifecycleMixin(Vue) {
     Vue.prototype._update = function (vnode) {
         console.log("========",vnode);
+        const vm = this;
         patch(vm.$el,vnode)
     }
 }

@@ -546,6 +546,7 @@
   function lifecycleMixin(Vue) {
     Vue.prototype._update = function (vnode) {
       console.log("========", vnode);
+      var vm = this;
       patch(vm.$el, vnode);
     };
   }
