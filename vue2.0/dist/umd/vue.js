@@ -177,14 +177,41 @@
     observe(data);
   }
 
+  function compilerToFunction(template) {
+    console.log(template);
+  }
+
   function initMixin(Vue) {
     Vue.prototype._init = function (options) {
       var vm = this;
       vm.$options = options; // 初始化数据
 
       initState(vm);
+
+      if (vm.$options.el) {
+        vm.$mount(vm.$options.el);
+      }
     };
   }
+
+  Vue.prototype.$mount = function (el) {
+    var vm = this;
+    var options = vm.$options;
+    el = document.querySelector(el);
+
+    if (!options.render) {
+      // 如果无render属性 判断有无template
+      var template = options.template; // 无template 且有el则将el内容赋值给template
+
+      if (!template && el) {
+        template = el.outerHTML;
+      }
+
+      var render = compilerToFunction(template);
+      options.render = render;
+      console.log(render);
+    }
+  };
 
   function Vue(options) {
     this._init(options);
