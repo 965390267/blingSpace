@@ -425,8 +425,30 @@
     console.log(str);
   }
 
+  function gen(node) {
+    if (node.type == 1) {
+      return generate(node);
+    } else {
+      var text = node.text; // 如果是普通文本
+
+      return "_v(".concat(JSON.stringify(text), ")");
+    }
+  }
+
+  function genChildren(el) {
+    var children = el.children;
+
+    if (children) {
+      return children.map(function (child) {
+        return gen(child);
+      }).join(',');
+    }
+  }
+
   function generate(el) {
-    var code = "_c('".concat(el.tag, "',\n    ").concat(el.attrs.length ? "".concat(genProps(el.attrs)) : 'undefine', ")");
+    var children = genChildren(el);
+    var code = "_c('".concat(el.tag, "',\n    ").concat(el.attrs.length ? "".concat(genProps(el.attrs)) : 'undefine', "\n    ").concat(children ? ",".concat(children) : '', "\n    )");
+    return code;
   }
 
   function compilerToFunction(template) {
@@ -435,7 +457,7 @@
     // 通过树生成代码
 
     var code = generate(ast);
-    console.log(ast);
+    console.log(code);
   }
 
   function initMixin(Vue) {

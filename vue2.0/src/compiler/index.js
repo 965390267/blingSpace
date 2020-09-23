@@ -8,6 +8,6 @@ export function compilerToFunction(template){
     // 通过树生成代码
     let code = generate(ast);
 
-    console.log(ast);
+    console.log(code);
 
 }
