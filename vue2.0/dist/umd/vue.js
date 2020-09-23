@@ -543,11 +543,50 @@
       return vnode;
     };
 
-    Vue.prototype._c = function () {};
+    Vue.prototype._c = function () {
+      // 创建元素
+      return createElement.apply(void 0, arguments);
+    };
 
-    Vue.prototype._v = function () {};
+    Vue.prototype._v = function (text) {
+      // 创建文本
+      return createTextVnode(text);
+    };
 
-    Vue.prototype._s = function () {};
+    Vue.prototype._s = function (val) {
+      // stringify
+      return val == null ? '' : _typeof(val) == 'object' ? JSON.stringify(val) : val;
+    };
+  }
+
+  function createElement(tag) {
+    var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var key = data.key;
+
+    if (key) {
+      delete data.key;
+    }
+
+    for (var _len = arguments.length, children = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+      children[_key - 2] = arguments[_key];
+    }
+
+    return vnode(tag, data, key, children);
+  }
+
+  function createTextVnode(text) {
+    return vnode(undefined, undefined, undefined, undefined, text);
+  } // 产生虚拟dom  与ast相比 差异在于 可以自定义数据格式
+
+
+  function vnode(tag, data, key, children, text) {
+    return {
+      tag: tag,
+      data: data,
+      key: key,
+      children: children,
+      text: text
+    };
   }
 
   function Vue(options) {
