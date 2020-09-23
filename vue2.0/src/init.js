@@ -28,6 +28,5 @@ Vue.prototype.$mount = function (el){
         }
         const render = compilerToFunction(template);
         options.render = render;
-        console.log(render);
     }
 }
