@@ -20,6 +20,7 @@ Vue.prototype.$mount = function (el){
     const vm = this;
     const options = vm.$options;
     el = document.querySelector(el);
+    vm.$el = el;
     if(!options.render){
         // 如果无render属性 判断有无template
         let template = options.template;

@@ -491,8 +491,63 @@
     return render;
   }
 
+  function patch(oldVnode, vnode) {
+    var isRealElement = oldVnode.nodeType;
+
+    if (isRealElement) {
+      var oldElm = oldVnode;
+      var parentElm = oldElm.parentNode;
+      var el = createElm(vnode);
+      parentElm.insertBefore(el, oldElm.nextSibling);
+      parentElm.removeChild(oldVnode);
+      return el;
+    }
+  }
+
+  function createElm(vnode) {
+    var tag = vnode.tag,
+        children = vnode.children,
+        key = vnode.key,
+        data = vnode.data,
+        text = vnode.text;
+
+    if (typeof tag === 'string') {
+      vnode.el = document.createElement(tag);
+      updateProperties(vnode);
+      children.forEach(function (child) {
+        return vnode.el.appendChild(createElm(child));
+      });
+    } else {
+      vnode.el = document.createTextNode(text);
+    }
+
+    return vnode.el;
+  }
+
+  function updateProperties(vnode) {
+    var newProps = vnode.data || {}; // 获取当前老节点中的属性 
+
+    var el = vnode.el; // 当前的真实节点
+
+    for (var key in newProps) {
+      if (key === 'style') {
+        for (var styleName in newProps.style) {
+          el.style[styleName] = newProps.style[styleName];
+        }
+      } else if (key === 'class') {
+        el.className = newProps["class"];
+      } else {
+        // 给这个元素添加属性 值就是对应的值
+        el.setAttribute(key, newProps[key]);
+      }
+    }
+  }
+
   function lifecycleMixin(Vue) {
-    Vue.prototype._update = function (vnode) {};
+    Vue.prototype._update = function (vnode) {
+      console.log("========", vnode);
+      patch(vm.$el, vnode);
+    };
   }
   function mountComponent(vm, el) {
     // 调用render方法，渲染el属性
@@ -518,6 +573,7 @@
     var vm = this;
     var options = vm.$options;
     el = document.querySelector(el);
+    vm.$el = el;
 
     if (!options.render) {
       // 如果无render属性 判断有无template
