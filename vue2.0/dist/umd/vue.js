@@ -401,6 +401,8 @@
     }
   }
 
+  var defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g; // mustatine  语法
+
   function genProps(attrs) {
     console.log(attrs);
     var str = "";
@@ -429,9 +431,35 @@
     if (node.type == 1) {
       return generate(node);
     } else {
-      var text = node.text; // 如果是普通文本
+      var text = node.text;
 
-      return "_v(".concat(JSON.stringify(text), ")");
+      if (!defaultTagRE.test(text)) {
+        // 如果是普通文本
+        return "_v(".concat(JSON.stringify(text), ")");
+      } else {
+        // 存放每一段的代码
+        var tokens = [];
+        var lastIndex = defaultTagRE.lastIndex = 0; // 如果正则是全局模式 需要每次使用前将索引置为0
+
+        var match, index;
+
+        while (match = defaultTagRE.exec(text)) {
+          index = match.index; // 保存匹配到的索引
+
+          if (index > lastIndex) {
+            tokens.push(JSON.stringify(text.slice(lastIndex, index)));
+          }
+
+          tokens.push("_s(".concat(match[1].trim(), ")"));
+          lastIndex = index + match[0].length;
+        }
+
+        if (lastIndex < text.length) {
+          tokens.push(JSON.stringify(text.slice(lastIndex)));
+        }
+
+        return "_v(".concat(tokens.join('+'), ")");
+      }
     }
   }
 
