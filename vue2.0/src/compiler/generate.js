@@ -11,10 +11,13 @@ function genProps(attrs) {
                 let [key,value] = item.split(':');
                 obj[key] = value;
             })
+            attr.value = obj;
         }
         str += `${attr.name} : ${JSON.stringify(attr.value)},`
-        
+
     }
+    console.log(str);
+    return `{${str.slice(0,-1)}}`;
 }
 
 function gen(node) {
@@ -43,7 +46,7 @@ function gen(node) {
             }
             return `_v(${tokens.join('+')})`;
         }
-       
+
     }
 }
 

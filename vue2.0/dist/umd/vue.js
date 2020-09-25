@@ -471,17 +471,24 @@
 
       if (attr.name === 'style') {
         (function () {
+          var obj = {};
           attr.value.split(';').forEach(function (item) {
             var _item$split = item.split(':'),
                 _item$split2 = _slicedToArray(_item$split, 2),
                 key = _item$split2[0],
                 value = _item$split2[1];
+
+            obj[key] = value;
           });
+          attr.value = obj;
         })();
       }
 
       str += "".concat(attr.name, " : ").concat(JSON.stringify(attr.value), ",");
     }
+
+    console.log(str);
+    return "{".concat(str.slice(0, -1), "}");
   }
 
   function gen(node) {
