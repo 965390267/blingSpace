@@ -69,7 +69,6 @@ export function parseHTML(html) {
     return root;
     // 信息处理函数
     function start(tagName,attrs) {
-        console.log(tagName,attrs,"======开始标签 属性");
         let element = createASTElement(tagName,attrs);
         if(!root){
             root = element
@@ -79,7 +78,6 @@ export function parseHTML(html) {
     }
     // 在结尾标签处创建父子关系
     function end(tagName){
-        console.log(tagName,"======结束标签");
         let element = stack.pop();
         currentParent = stack[stack.length - 1];
         // 在标签闭合时记录标签的父级
@@ -89,7 +87,6 @@ export function parseHTML(html) {
         }
     }
     function chars(text){
-        console.log(text,"======文本");
         text = text.replace(/\s/g,'');
         if (text) {
             currentParent.children.push({

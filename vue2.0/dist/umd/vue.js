@@ -127,10 +127,77 @@
 
 
       if (inserted) ob.observerArray(inserted);
-      console.log('数组更新方法 == 去渲染页面');
       return r;
     };
   });
+
+  var LIFECYCLE_HOOKS = ["beforeCreate", "created", "beforeMount", "mounted", "beforeUpdate", "updated", "beforeDestory", "destoryed"];
+  var strats = {};
+
+  strats.data = function (parentVal, childValue) {
+    return childValue;
+  };
+
+  strats.computed = function () {};
+
+  strats.watch = function () {};
+
+  function mergeHook(parentVal, childValue) {
+    // 生命周期的合并
+    if (childValue) {
+      // 父有子有
+      if (parentVal) {
+        return parentVal.concat([childValue]);
+      } else {
+        // 父无子有
+        return [childValue];
+      }
+    } else {
+      // 父有子无
+      return parentVal;
+    }
+  }
+
+  LIFECYCLE_HOOKS.forEach(function (lifeCycle) {
+    strats[lifeCycle] = mergeHook;
+  });
+  function mergeOptions(parent, child) {
+    var options = {}; // 遍历处理父亲所有key
+
+    for (var key in parent) {
+      mergeField(key);
+    } // 遍历所有父无子有属性
+
+
+    for (var _key in child) {
+      if (!parent.hasOwnProperty(_key)) {
+        mergeField(_key);
+      }
+    } // 子有父无
+
+    /**
+     * 合并字段
+     * @param {*} key 
+     */
+
+
+    function mergeField(key) {
+      if (strats[key]) {
+        options[key] = strats[key](parent[key], child[key]);
+      } else {
+        options[key] = child[key];
+      }
+    }
+
+    return options;
+  }
+  function defineProperty(target, key, value) {
+    Object.defineProperty(target, key, {
+      enumerable: false,
+      configurable: false,
+      value: value
+    });
+  }
 
   var Observer = /*#__PURE__*/function () {
     function Observer(data) {
@@ -138,11 +205,7 @@
 
       if (Array.isArray(data)) {
         // 新增属性，声明此属性已被观测
-        Object.defineProperty(data, "__ob__", {
-          enumerable: false,
-          configurable: false,
-          value: this
-        }); // 只能拦截数组的方法，但对数组中的每一项 无法监听 需要观测
+        defineProperty(data, "__ob__", this); // 只能拦截数组的方法，但对数组中的每一项 无法监听 需要观测
 
         data.__proto__ = arrayMethods;
         this.observerArray(data); // console.log(data,arrayMethods);
@@ -315,7 +378,6 @@
     return root; // 信息处理函数
 
     function start(tagName, attrs) {
-      console.log(tagName, attrs, "======开始标签 属性");
       var element = createASTElement(tagName, attrs);
 
       if (!root) {
@@ -328,7 +390,6 @@
 
 
     function end(tagName) {
-      console.log(tagName, "======结束标签");
       var element = stack.pop();
       currentParent = stack[stack.length - 1]; // 在标签闭合时记录标签的父级
 
@@ -339,7 +400,6 @@
     }
 
     function chars(text) {
-      console.log(text, "======文本");
       text = text.replace(/\s/g, '');
 
       if (text) {
@@ -404,7 +464,6 @@
   var defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g; // mustatine  语法
 
   function genProps(attrs) {
-    console.log(attrs);
     var str = "";
 
     for (var i = 0; i < attrs.length; i++) {
@@ -423,8 +482,6 @@
 
       str += "".concat(attr.name, " : ").concat(JSON.stringify(attr.value), ",");
     }
-
-    console.log(str);
   }
 
   function gen(node) {
@@ -545,7 +602,6 @@
 
   function lifecycleMixin(Vue) {
     Vue.prototype._update = function (vnode) {
-      console.log("========", vnode);
       var vm = this;
       patch(vm.$el, vnode);
     };
@@ -556,13 +612,25 @@
     vm._update(vm._render()); // 将虚拟节点渲染到页面上
 
   }
+  function callHook(vm, hook) {
+    var handlers = vm.$options[hook];
+
+    if (handlers) {
+      for (var index = 0; index < handlers.length; index++) {
+        var handler = handlers[index];
+        handler.call(vm);
+      }
+    }
+  }
 
   function initMixin(Vue) {
     Vue.prototype._init = function (options) {
       var vm = this;
-      vm.$options = options; // 初始化数据
+      vm.$options = mergeOptions(vm.constructor.options, options);
+      callHook(vm, 'beforeCreate'); // 初始化数据
 
       initState(vm);
+      callHook(vm, 'created');
 
       if (vm.$options.el) {
         vm.$mount(vm.$options.el);
@@ -589,7 +657,9 @@
     } // options中存在render后 开始挂载此组件
 
 
+    callHook(vm, 'beforeMount');
     mountComponent(vm);
+    callHook(vm, 'mounted');
   };
 
   function renderMixin(Vue) {
@@ -646,13 +716,25 @@
     };
   }
 
+  function initGlobalApi(Vue) {
+    Vue.options = {};
+
+    Vue.mixin = function (mixin) {
+      this.options = mergeOptions(this.options, mixin);
+      console.log(this.opions);
+    };
+  }
+
   function Vue(options) {
     this._init(options);
-  }
+  } // 原型方法
+
 
   initMixin(Vue);
   lifecycleMixin(Vue);
-  renderMixin(Vue);
+  renderMixin(Vue); // 静态方法
+
+  initGlobalApi(Vue);
 
   return Vue;
 

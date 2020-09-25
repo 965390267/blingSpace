@@ -30,7 +30,6 @@ methods.forEach(method=>{
         // console.log(inserted);
 
         if(inserted) ob.observerArray(inserted)
-        console.log('数组更新方法 == 去渲染页面');
         return r;
 
     }

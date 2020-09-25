@@ -1,14 +1,11 @@
 import {arrayMethods} from './array';
+import { defineProperty } from '../util';
 class Observer {
     constructor(data){
 
         if (Array.isArray(data)) {
             // 新增属性，声明此属性已被观测
-            Object.defineProperty(data,"__ob__",{
-                enumerable:false,
-                configurable: false,
-                value:this
-            })
+            defineProperty(data,"__ob__",this);
 
             // 只能拦截数组的方法，但对数组中的每一项 无法监听 需要观测
             data.__proto__ = arrayMethods;

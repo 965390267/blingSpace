@@ -5,7 +5,7 @@ export default {
     input: './src/index.js',
     output: {
         format: 'umd',
-        name: 'Vue',
+        name: 'Vue', 
         file: 'dist/umd/vue.js',
         sourcemap: true
     },
