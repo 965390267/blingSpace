@@ -35,8 +35,6 @@ Vue.prototype.$mount = function (el){
     }
 
     // options中存在render后 开始挂载此组件
-    callHook(vm,'beforeMount');
     mountComponent(vm,el);
-    callHook(vm,'mounted');
 
 }

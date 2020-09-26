@@ -5,10 +5,12 @@ class Dep {
         this.id = id++;
     }
     depend(){
+       if(Dep.target){
         Dep.target.addDep(this);
+       }
     }
     notify(){ 
-        this.subs.forEatch(sub=>sub.update());
+        this.subs.forEach(sub=>sub.update());
     }
     addSub(watcher){
         this.subs.push(watcher);

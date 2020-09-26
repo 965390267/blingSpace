@@ -8,6 +8,7 @@
     <div id="app">
         {{age}}
         <div style="color:yellow">姓名 {{name}}</div>
+        {{arr}}
     </div>
     <!-- <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.5.0/vue.js"></script> -->
     <script src="dist/umd/vue.js"></script>
@@ -28,7 +29,8 @@
             data(){
                 return {
                   name: '王志远',
-                  age: 23
+                  age: 23,
+                  arr:[1]
                 }
             },
             created () {
@@ -40,8 +42,18 @@
 // // 数组内对象的劫持
 // vm._data.a[2].b = 22;
 // vm.a.shift();
-vm.age = 22;
-vm._update(vm._render());
+
+// setTimeout(() => {
+//     vm.arr.push(123)
+//     vm.arr.push(123)
+//     vm.arr.push(123)
+//     vm.arr.push(123)
+//     vm.arr.push(123)
+// }, 1000);
+setTimeout(() => {
+    vm.age = 22;
+    // vm._update(vm._render())
+}, 5000);
     </script>
 </body>
 </html>

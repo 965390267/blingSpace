@@ -49,12 +49,14 @@ function defineReactuve(data,key,value){
             return value
         },
         set(newValue){
+           
             console.log('用户赋值');
             if(value !== newValue){
                 // 对新赋值的对象进行观测
                 observe(newValue);
                 value = newValue
             }
+            dep.notify();
         }
     }
     )

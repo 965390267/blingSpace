@@ -13,6 +13,7 @@ export function mountComponent(vm,el) {
     // 先使用render方法创建虚拟节点 
     // vm._update(vm._render());
     let updateComponent=()=>{
+        debugger;
         vm._update(vm._render());
     }
     new Watcher(vm,updateComponent,()=>{

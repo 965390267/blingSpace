@@ -17,6 +17,7 @@ class Watcher {
         this.get();
     }
     get(){
+        
        pushTarget(this);
         this.getter();
         popTarget();
