@@ -5,7 +5,7 @@
 
 # production  打包文件
 /build
-./dist/.
+dist
 # misc 
 .DS_Store
 
