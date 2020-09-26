@@ -1,12 +1,17 @@
+let id = 0;
 class Dep {
     constructor(){
         this.subs = [];
+        this.id = id++;
     }
     depend(){
-        this.subs.push(Dep.target);
+        Dep.target.addDep(this);
     }
-    notify(){
+    notify(){ 
         this.subs.forEatch(sub=>sub.update());
+    }
+    addSub(watcher){
+        this.subs.push(watcher);
     }
 }
 

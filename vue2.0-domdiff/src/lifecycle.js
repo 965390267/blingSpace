@@ -15,7 +15,9 @@ export function mountComponent(vm,el) {
     let updateComponent=()=>{
         vm._update(vm._render());
     }
-    new Watcher(vm,updateComponent,()=>{},true);
+    new Watcher(vm,updateComponent,()=>{
+        callHook(vm,'beforeUpdate')
+    },true);
     callHook(vm,'mounted');
     // 将虚拟节点渲染到页面上
 }
