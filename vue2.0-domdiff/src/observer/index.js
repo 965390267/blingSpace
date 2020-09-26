@@ -1,5 +1,6 @@
 import {arrayMethods} from './array';
 import { defineProperty } from '../util';
+import Dep from './Dep';
 class Observer {
     constructor(data){
 
@@ -32,8 +33,13 @@ class Observer {
 function defineReactuve(data,key,value){
     // 实现递归
     observe(value)
+
+    let dep = new Dep();
     Object.defineProperty(data,key,{
         get(){
+            if(Dep.target){
+                dep.depend();
+            }
             console.log('用户取值');
             return value
         },

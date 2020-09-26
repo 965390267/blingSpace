@@ -6,7 +6,7 @@
 </head>
 <body>
     <div id="app">
-        11
+        {{age}}
         <div style="color:yellow">姓名 {{name}}</div>
     </div>
     <!-- <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.5.0/vue.js"></script> -->
@@ -40,6 +40,8 @@
 // // 数组内对象的劫持
 // vm._data.a[2].b = 22;
 // vm.a.shift();
+vm.age = 22;
+vm._update(vm._render());
     </script>
 </body>
 </html>
