@@ -2,7 +2,6 @@
 const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g   // mustatine  语法
 
 function genProps(attrs) {
-    console.log(attrs);
     let str = "";
     for (let i = 0; i < attrs.length; i++) {
         let attr = attrs[i];
