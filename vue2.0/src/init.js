@@ -28,6 +28,7 @@ Vue.prototype.$mount = function (el){
         if(!template && el){
             template = el.outerHTML;
         }
+        console.log("html===========",template);
         const render = compilerToFunction(template);
         options.render = render;
     }
