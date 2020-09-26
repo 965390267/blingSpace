@@ -30,6 +30,7 @@ methods.forEach(method=>{
         // console.log(inserted);
 
         if(inserted) ob.observerArray(inserted)
+        ob.dep.notify();
         return r;
 
     }

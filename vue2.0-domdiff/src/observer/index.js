@@ -3,7 +3,7 @@ import { defineProperty } from '../util';
 import Dep from './Dep';
 class Observer {
     constructor(data){
-
+        this.dep = new Dep();
         if (Array.isArray(data)) {
             // 新增属性，声明此属性已被观测
             defineProperty(data,"__ob__",this);
@@ -32,13 +32,18 @@ class Observer {
 
 function defineReactuve(data,key,value){
     // 实现递归
-    observe(value)
+    // 获取到数组对应的dep
+    let childDep = observe(value);
+
 
     let dep = new Dep();
     Object.defineProperty(data,key,{
         get(){
             if(Dep.target){
                 dep.depend();
+                if(typeof childDep == 'object'){
+                    childDep.dep.depend();
+                }
             }
             console.log('用户取值');
             return value
@@ -64,3 +69,9 @@ export function observe(data){
     if(data.__ob__) return;
     return new Observer(data);
 }
+
+
+// 目标：当前数组需要记录当前渲染watcher 以在数组数据变化时发布
+// 1. 为所有对象类型增加一个dep属性
+// 2. 取arr时会调用get方法 让数组的dep记住这个watcher
+// 3. 更新数组时（7个方法），找到数组对应的dep进行发布
