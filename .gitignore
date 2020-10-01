@@ -4,15 +4,9 @@
 /**/node_modules
 
 # production  打包文件
-<<<<<<< HEAD
 /build
 dist
-# misc 
-=======
-/**/build
-/**/dist/
 # misc
->>>>>>> 5055110d0404ce834ee67b356a8d6422fcbf59f4
 .DS_Store
 
 npm-debug.log*
