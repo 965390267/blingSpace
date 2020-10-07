@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import List from '../pages/List';
 import Add from '../pages/Add';
+import UserDetail from '../pages/UserDetail';
 
 
 export default class User extends Component {
@@ -15,7 +16,7 @@ export default class User extends Component {
                 content: '用户添加'
             },
             {
-                path: '/user/detail',
+                path: '/user/list',
                 content: '用户详情'
             }
         ]
@@ -29,7 +30,8 @@ export default class User extends Component {
           <div className="col-md-9">
             <Switch>
                 <Route path="/user/add" component={Add}/>
-                <Route path="/user/detail" component={List}/>
+                <Route path="/user/list" component={List}/>
+                <Route path="/user/detail/:uid" component={UserDetail}/>
             </Switch>
           </div>
       </div>

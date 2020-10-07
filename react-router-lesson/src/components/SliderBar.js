@@ -3,7 +3,6 @@ import {Link} from 'react-router-dom';
 
 class sliderBar extends Component {
     render() {
-        console.log(this.props.sliderBarData);
         return (
             <div className="nav nav-stacked">
                 {

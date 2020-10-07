@@ -1,7 +1,21 @@
 import React, { Component } from 'react';
-import {NavLink} from 'react-router-dom';
+import {NavLink,Route} from 'react-router-dom';
+
+let withRoute = (component) => {
+    return () => {
+        return <Route component={component} />
+    }
+}
+
 class Nav extends Component {
+    state = {
+
+    }
+    handleClick = () => {
+        console.log(this.props);
+    }
     render() {
+        console.log(this.props);
         return (
             <nav className="navbar navbar-inverse">
                 <div className="container-fluid">
@@ -20,5 +34,4 @@ class Nav extends Component {
         );
     }
 }
-
-export default Nav;
+export default withRoute(Nav);
