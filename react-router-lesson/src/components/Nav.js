@@ -28,6 +28,7 @@ class Nav extends Component {
                     <li><NavLink exact={true} to='/'>首页</NavLink></li>
                     <li> <NavLink to='/user'>用户</NavLink></li>
                     <li><NavLink to='/profile'>文章</NavLink></li>
+                    <li><NavLink to='/login'>登录</NavLink></li>
                 </div>
             </nav>
 

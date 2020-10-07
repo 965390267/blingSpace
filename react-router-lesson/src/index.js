@@ -5,6 +5,8 @@ import {BrowserRouter as Router,Route,Redirect,Switch,NavLink} from 'react-route
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import User from './pages/User';
+import Login from './pages/Login';
+import Protected from './Protected';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -17,7 +19,8 @@ render(
         <Switch>
           <Route exact={true} path="/" component={Home}></Route>
           <Route path="/user" component={User}></Route>
-          <Route path="/profile" component={Profile}></Route>
+          <Protected path="/profile" component={Profile}></Protected>
+          <Route path="/login" component={Login}></Route>
           <Redirect to="/" />
         </Switch>
       </App>
