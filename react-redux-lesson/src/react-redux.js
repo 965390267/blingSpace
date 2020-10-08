@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import store from './store';
+import { bindActionCreators } from 'redux';
 let Context = React.createContext();
 
 export default class Provider extends Component {
@@ -16,7 +16,7 @@ export default class Provider extends Component {
 
 let connect = (mapStateToProps,mapDispatchToProps) => (Component) => {
     return () => {
-
+        
         class Proxy extends Component {
             state = this.props.store.getState()
             componentDidMount(){
@@ -30,10 +30,16 @@ let connect = (mapStateToProps,mapDispatchToProps) => (Component) => {
                 this.unsub();
             }
             render(){
+                let actions;
+        if (typeof mapDispatchToProps == 'function') {
+            actions = mapDispatchToProps(this.props.store.dispatch)
+        }else {
+            actions = bindActionCreators(mapDispatchToProps,this.props.store.dispatch)
+        }
                 return (
                     <Component   
                         {...(mapStateToProps(this.state))}
-                        {...(mapDispatchToProps(this.props.store.dispatch))}
+                        {...actions}
                     ></Component>
                 )
             }

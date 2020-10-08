@@ -60,5 +60,5 @@ export default connect((state)=>{
     return {
         number:state.counter.number
     }
-}, mapDispatchToProps)(Counter);
+}, actions)(Counter);
 // export default Counter;
