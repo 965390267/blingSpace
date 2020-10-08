@@ -21,8 +21,16 @@ let createStore = (reducer)=>{
         subscribe
     }
 }
-
+let combineReducers = (reducers)=>{
+    return (state = {},action) =>{
+        for (const key in reducers) {
+                state[key] = reducers[key](state[key],action);
+        }
+        return state;
+    }
+}
 export {
-    createStore
+    createStore,
+    combineReducers
 }
 

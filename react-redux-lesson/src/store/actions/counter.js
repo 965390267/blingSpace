@@ -8,7 +8,7 @@ export function add(n) {
         count: n
       }
 }
-export function minux(n) {
+export function minus(n) {
     return {
         type: MINUS,
         count: n

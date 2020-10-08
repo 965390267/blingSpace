@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import store from '../store';
 import * as actions from '../store/actions/todo';
+
 window.store = store
 class Todo extends Component {
   input = ''
   state = {
-    todos: store.getState()
+    todos: store.getState().todo
   }
   componentDidMount(){
     store.subscribe(()=>{
       this.setState({
-        todos: store.getState()
+        todos: store.getState().todo
       })
     })
   }

@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
-import store from '../store/index';
-import {add,minux} from '../store/actions/counter';
+import {add,minus} from '../store/actions/counter';
+import {connect} from 'react-redux';
+// import {bindActionCreators} from 'redux';
 
 class Counter extends Component {
     state = {
-        number:store.getState().number
+       number: this.props.number
     }
-    componentDidMount(){
-        store.subscribe(()=>{
-            this.setState({
-                number:store.getState().number
-            })
-        })
-    }
+    // componentDidMount(){
+    //     store.subscribe(()=>{
+    //         this.setState({
+    //             number:store.getState().counter.number
+    //         })
+    //     })
+    // }
     handleAdd = () =>{
-        store.dispatch(add(3));
+        this.props.add(3);
     }
     handleMinus = () =>{
-        store.dispatch(minux(2));
+        this.props.minus(2);
     }
     render() {
         return (
@@ -26,10 +27,34 @@ class Counter extends Component {
             <button onClick={this.handleAdd} id="add">+</button>
             <button onClick={this.handleMinus} id="minus">-</button>
             {
-                this.state.number
+               this.props.number
             } </div>
         );
     }
 }
 
-export default Counter;
+// let bindActionCreators = (actions,dispatch)=>{
+//     let obj = {};
+//     for (const key in actions) {
+//             obj[key] = dispatch(actions[key](...args));
+//     }
+//     return obj;
+// }
+
+let mapStateToProps = (state)=>{
+    return {
+        number:state.counter.number
+    }
+}
+let mapDispatchToProps = (dispatch)=>{
+    return {
+        add(val){
+            dispatch(add(val))
+        },
+        minus(val){
+            dispatch(minus(val))
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);
+// export default Counter;
