@@ -29,8 +29,17 @@ let combineReducers = (reducers)=>{
         return state;
     }
 }
+let bindActionCreators = (actions,dispatch)=>{
+    let obj = {};
+    for (const key in actions) {
+            obj[key] = dispatch(actions[key](...args));
+    }
+    return obj;
+}
+
 export {
     createStore,
-    combineReducers
+    combineReducers,
+    bindActionCreators
 }
 

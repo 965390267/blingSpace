@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import {add,minus} from '../store/actions/counter';
-import {connect} from 'react-redux';
-// import {bindActionCreators} from 'redux';
+import * as actions from '../store/actions/counter';
+import {connect} from '../react-redux';
+import {bindActionCreators} from 'redux';
+let {add,minus} = actions;
 
 class Counter extends Component {
     state = {
@@ -33,19 +34,8 @@ class Counter extends Component {
     }
 }
 
-// let bindActionCreators = (actions,dispatch)=>{
-//     let obj = {};
-//     for (const key in actions) {
-//             obj[key] = dispatch(actions[key](...args));
-//     }
-//     return obj;
-// }
 
-let mapStateToProps = (state)=>{
-    return {
-        number:state.counter.number
-    }
-}
+
 let mapDispatchToProps = (dispatch)=>{
     return {
         add(val){
@@ -56,5 +46,19 @@ let mapDispatchToProps = (dispatch)=>{
         }
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Counter);
+
+// let bindActionCreators = (actions,dispatch) => {
+//     let obj = {};
+//     for (const key in actions) {
+//         if (actions.hasOwnProperty(key)) {
+//             obj[key] = (...args)=>dispatch(actions[key](...args));     
+//         }
+//     }
+//     return obj
+// }
+export default connect((state)=>{
+    return {
+        number:state.counter.number
+    }
+}, mapDispatchToProps)(Counter);
 // export default Counter;
